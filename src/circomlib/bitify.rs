@@ -22,6 +22,7 @@ pub fn Num2Bits(n: usize, v: Bn128FieldElement) -> Vec<Bn128FieldElement> {
         lc1 += out[i] * e2;
         e2 += e2;
     }
+    constrain_eq(lc1, v);
     out
 }
 

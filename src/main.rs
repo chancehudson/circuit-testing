@@ -2,6 +2,7 @@ use scalarff::BigUint;
 use scalarff::Bn128FieldElement;
 use scalarff::FieldElement;
 use zk_kit::SafeLessThan;
+use zk_kit::SafeLessThanProposed;
 
 mod circomlib;
 mod zk_kit;
