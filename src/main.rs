@@ -22,6 +22,8 @@ fn main() {
     safe_less_than_counter();
 }
 
+pub type Signal = Option<Bn128FieldElement>;
+
 /// find a counter example for the SafeLessThan component
 /// where the wrong value is returned
 fn safe_less_than_counter() {
@@ -62,5 +64,13 @@ fn and(f: &Bn128FieldElement, other: usize) -> Bn128FieldElement {
 fn constrain_eq(v0: Bn128FieldElement, v1: Bn128FieldElement) {
     if v0 != v1 {
         panic!("constraint failed");
+    }
+}
+
+fn constrain_assign(v: Bn128FieldElement, into: &mut Signal) {
+    if let Some(_) = into {
+        panic!("attempting to assign multiple values to signal");
+    } else {
+        *into = Some(v);
     }
 }
