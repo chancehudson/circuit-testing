@@ -21,6 +21,7 @@ fn main() {
     }
 
     safe_less_than_counter();
+    safe_less_than_alias_check();
 }
 
 pub type Signal = Option<Bn128FieldElement>;
@@ -43,6 +44,32 @@ Expected: {expected} Got: {actual}"
             );
             break;
         }
+    }
+}
+
+/// Attempt to cause a constraint failure by passing largest possible values
+/// to the circuit
+fn safe_less_than_alias_check() {
+    // circuit contains an assertion that this is the max value
+    let n = 252;
+
+    // choose the largest in0 possible, 2^252-1
+    let in0 = Bn128FieldElement::from_biguint(&(BigUint::from(2_u64).pow(252) - 1_u64));
+
+    // circuit subtracts in1 from in0, so set it to 0
+    let in1 = Bn128FieldElement::zero();
+    let expected = Bn128FieldElement::zero();
+
+    let actual = SafeLessThanProposed(n, (in0, in1));
+    if actual != expected {
+        println!(
+            "safe_less_than_alias_check:
+n: {n}
+in: [{in0}, {in1}]
+Expected: {expected} Got: {actual}"
+        );
+    } else {
+        println!("alias check was not triggered")
     }
 }
 
