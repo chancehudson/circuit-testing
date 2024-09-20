@@ -53,23 +53,49 @@ fn safe_less_than_alias_check() {
     // circuit contains an assertion that this is the max value
     let n = 252;
 
-    // choose the largest in0 possible, 2^252-1
-    let in0 = Bn128FieldElement::from_biguint(&(BigUint::from(2_u64).pow(252) - 1_u64));
+    {
+        // first try to overflow
+        //
+        // choose the largest in0 possible, 2^252-1
+        let in0 = Bn128FieldElement::from_biguint(&(BigUint::from(2_u64).pow(252) - 1_u64));
 
-    // circuit subtracts in1 from in0, so set it to 0
-    let in1 = Bn128FieldElement::zero();
-    let expected = Bn128FieldElement::zero();
+        // circuit subtracts in1 from in0, so set it to 0
+        let in1 = Bn128FieldElement::zero();
+        let expected = Bn128FieldElement::zero();
 
-    let actual = SafeLessThanProposed(n, (in0, in1));
-    if actual != expected {
-        println!(
-            "safe_less_than_alias_check:
+        let actual = SafeLessThanProposed(n, (in0, in1));
+        if actual != expected {
+            println!(
+                "safe_less_than_alias_check:
 n: {n}
 in: [{in0}, {in1}]
 Expected: {expected} Got: {actual}"
-        );
-    } else {
-        println!("alias check was not triggered")
+            );
+        } else {
+            println!("alias check was not triggered")
+        }
+    }
+    {
+        // now try to underflow
+        //
+        // choose the largest in0 possible, 2^252-1
+        let in0 = Bn128FieldElement::zero();
+
+        // circuit subtracts in1 from in0, so set it to 0
+        let in1 = Bn128FieldElement::from_biguint(&(BigUint::from(2_u64).pow(252) - 1_u64));
+        let expected = Bn128FieldElement::one();
+
+        let actual = SafeLessThanProposed(n, (in0, in1));
+        if actual != expected {
+            println!(
+                "safe_less_than_alias_check:
+n: {n}
+in: [{in0}, {in1}]
+Expected: {expected} Got: {actual}"
+            );
+        } else {
+            println!("alias check was not triggered")
+        }
     }
 }
 
